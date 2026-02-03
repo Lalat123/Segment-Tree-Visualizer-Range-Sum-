@@ -1,0 +1,134 @@
+/* style.css */
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    color: #e5e7eb;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+}
+
+/* Input & Button Container */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    background: rgba(30, 41, 59, 0.5);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #fff;
+    transition: all 0.2s;
+    width: 140px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #fff;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4);
+    transition: transform 0.1s, box-shadow 0.2s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.5);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+#result {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fbbf24;
+    height: 24px;
+}
+
+/* SVG Container */
+svg {
+    width: 100%;
+    max-width: 1000px;
+    height: 600px;
+    border-radius: 16px;
+    border: 1px solid #334155;
+    background: #020617;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    margin-top: 20px;
+}
+
+/* Graph Elements */
+.edge {
+    stroke: #475569;
+    stroke-width: 2;
+    opacity: 0.6;
+}
+
+.node {
+    fill: #dfd6d9;      
+    stroke: #38bdf8;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+    
+    /* Animation */
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+}
+
+.node-text {
+    fill: #1a0f05;      
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+    
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: popIn 0.4s 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+}
+
+@keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
