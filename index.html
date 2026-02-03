@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Segment Tree Visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+        }
+
+        input {
+            width: 140px;
+        }
+
+        button {
+            background: #22c55e;
+            color: #022c22;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #16a34a;
+        }
+
+        #result {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 16px;
+            color: #facc15;
+        }
+
+        svg {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #334155;
+            background: #020617;
+            margin-top: 20px;
+        }
+
+        .node {
+            fill: #0c0e1b;      
+            stroke: #091c24;
+            stroke-width: 2;
+        }
+
+        .node-text {
+            fill: #d11515cc;      
+            font-size: 13px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .edge {
+            stroke: #64748b;
+            stroke-width: 2;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Segment Tree Visualizer (Range Sum)</h1>
+
+<div class="controls">
+    <input id="arrayInput" placeholder="Array (e.g. 1 2 3 4)">
+    <button onclick="build()">Build Tree</button>
+
+    <input id="updateIndex" placeholder="Update index">
+    <input id="updateValue" placeholder="New value">
+    <button onclick="update()">Update</button>
+
+    <input id="queryL" placeholder="Query L">
+    <input id="queryR" placeholder="Query R">
+    <button onclick="query()">Query</button>
+</div>
+
+<div id="result"></div>
+
+<svg id="svg"></svg>
+
+<script>
+    let arr = [];
+    let seg = [];
+    let n = 0;
+
+    function build() {
+        arr = document.getElementById("arrayInput").value
+            .trim().split(/\s+/).map(Number);
+
+        if (arr.length === 0) return;
+
+        n = arr.length;
+        seg = new Array(4 * n).fill(0);
+        buildTree(1, 0, n - 1);
+        drawTree();
+        document.getElementById("result").innerText = "";
+    }
+
+    function buildTree(node, l, r) {
+        if (l === r) {
+            seg[node] = arr[l];
+            return;
+        }
+        let mid = Math.floor((l + r) / 2);
+        buildTree(node * 2, l, mid);
+        buildTree(node * 2 + 1, mid + 1, r);
+        seg[node] = seg[node * 2] + seg[node * 2 + 1];
+    }
+
+    function update() {
+        let idx = Number(document.getElementById("updateIndex").value);
+        let val = Number(document.getElementById("updateValue").value);
+        if (idx < 0 || idx >= n) return;
+
+        updateTree(1, 0, n - 1, idx, val);
+        drawTree();
+    }
+
+    function updateTree(node, l, r, idx, val) {
+        if (l === r) {
+            seg[node] = val;
+            arr[idx] = val;
+            return;
+        }
+        let mid = Math.floor((l + r) / 2);
+        if (idx <= mid)
+            updateTree(node * 2, l, mid, idx, val);
+        else
+            updateTree(node * 2 + 1, mid + 1, r, idx, val);
+
+        seg[node] = seg[node * 2] + seg[node * 2 + 1];
+    }
+
+    function query() {
+        let L = Number(document.getElementById("queryL").value);
+        let R = Number(document.getElementById("queryR").value);
+        if (L < 0 || R >= n || L > R) return;
+
+        let ans = queryTree(1, 0, n - 1, L, R);
+        document.getElementById("result").innerText =
+            `Sum [${L}, ${R}] = ${ans}`;
+    }
+
+    function queryTree(node, l, r, ql, qr) {
+        if (qr < l || r < ql) return 0;
+        if (ql <= l && r <= qr) return seg[node];
+        let mid = Math.floor((l + r) / 2);
+        return queryTree(node * 2, l, mid, ql, qr)
+             + queryTree(node * 2 + 1, mid + 1, r, ql, qr);
+    }
+
+    function drawTree() {
+        const svg = document.getElementById("svg");
+        svg.innerHTML = "";
+
+        const levelGap = 80;
+        const nodeRadius = 18;
+        const positions = {};
+
+        function dfs(node, l, r, depth, x1, x2) {
+            if (l > r || seg[node] === undefined) return;
+
+            const x = (x1 + x2) / 2;
+            const y = depth * levelGap + 40;
+            positions[node] = { x, y };
+
+            if (l !== r) {
+                let mid = Math.floor((l + r) / 2);
+                dfs(node * 2, l, mid, depth + 1, x1, x);
+                dfs(node * 2 + 1, mid + 1, r, depth + 1, x, x2);
+            }
+        }
+
+        dfs(1, 0, n - 1, 0, 40, svg.clientWidth - 40);
+
+        for (let node in positions) {
+            let left = node * 2;
+            let right = node * 2 + 1;
+            if (positions[left]) drawLine(positions[node], positions[left]);
+            if (positions[right]) drawLine(positions[node], positions[right]);
+        }
+
+        for (let node in positions) {
+            drawNode(positions[node].x, positions[node].y, seg[node]);
+        }
+    }
+
+    function drawLine(a, b) {
+        const svg = document.getElementById("svg");
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", a.x);
+        line.setAttribute("y1", a.y);
+        line.setAttribute("x2", b.x);
+        line.setAttribute("y2", b.y);
+        line.setAttribute("class", "edge");
+        svg.appendChild(line);
+    }
+
+    function drawNode(x, y, value) {
+        const svg = document.getElementById("svg");
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", x);
+        circle.setAttribute("cy", y);
+        circle.setAttribute("r", 18);
+        circle.setAttribute("class", "node");
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x);
+        text.setAttribute("y", y);
+        text.setAttribute("class", "node-text");
+        text.textContent = value;
+
+        svg.appendChild(circle);
+        svg.appendChild(text);
+    }
+</script>
+
+</body>
+</html>
