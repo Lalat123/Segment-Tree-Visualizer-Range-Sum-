@@ -16,13 +16,4 @@ An interactive web-based tool to visualize the construction and operations of a 
 * **Logic:** Vanilla JavaScript (No external libraries)
 * **Graphics:** Scalable Vector Graphics (SVG) for rendering the tree.
 
-## 💻 How to Run Locally
-1.  Clone the repository:
-    ```bash
-    git clone [https://github.com/your-username/segment-tree-visualizer.git](https://github.com/your-username/segment-tree-visualizer.git)
-    ```
-2.  Navigate to the folder:
-    ```bash
-    cd segment-tree-visualizer
-    ```
-3.  Open `index.html` in any web browser.
+
