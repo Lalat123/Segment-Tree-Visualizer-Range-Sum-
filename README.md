@@ -3,7 +3,7 @@
 An interactive web-based tool to visualize the construction and operations of a **Segment Tree** for Range Sum Queries. Built with vanilla JavaScript and SVG.
 
 ## 🚀 Live Demo
-[Click here to use the Visualizer](https://YOUR_USERNAME.github.io/segment-tree-visualizer/)
+[Click here to use the Visualizer](http://127.0.0.1:5500/index.html)
 
 ## ✨ Key Features
 * **Dynamic Construction:** Input any array (e.g., `1 2 3 4 5`) to instantly generate the tree structure.
